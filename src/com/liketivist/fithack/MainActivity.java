@@ -30,6 +30,8 @@ public class MainActivity extends Activity implements OnClickListener {
    public void onClick(View v) {
       if ( v == _theButton ) {
          Toast.makeText(this, "You pressed THE BUTTON", Toast.LENGTH_LONG).show();
+         MapMyRunQuery mmrq = new MapMyRunQuery();
+         mmrq.getRoute(0.1f, 45.06f, -122.32f);
       }
    }
 
