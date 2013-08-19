@@ -87,7 +87,7 @@ public class MainActivity extends Activity implements OnClickListener {
             }
 
          };
-         mmrq.getRoute(0.1f, 45.06f, -122.32f);
+         mmrq.getRoute(0.1f, 45.60f, -122.60f);
       }
    }
 
