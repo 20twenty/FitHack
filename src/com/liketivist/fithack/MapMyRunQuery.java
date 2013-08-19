@@ -19,7 +19,7 @@ public abstract class MapMyRunQuery {
    public MapMyRunQuery() {
    }
    
-   public void getRoute(float distance, float latitude, float longitude) {
+   public void getRoute(double distance, double latitude, double longitude) {
 //      new MyHttpGet("http://api.mapmyfitness.com/3.1/geocode/get_location?&o=json&location=97015") {
 //         @Override
 //         public void onResponseReceived(String response) {
@@ -40,7 +40,7 @@ public abstract class MapMyRunQuery {
 //         }
 //      }.execute();
 //      
-      final double distanceFinal = (double)distance;
+      final double distanceFinal = distance;
       new MyHttpGet("http://api.mapmyfitness.com/3.1/routes/search_routes?o=json&center_longitude="+longitude+"&center_latitude="+latitude+"&radius=1&route_type_id=1&start_record=0&limit=100&sort_by=total_distance") {
 
          @Override
