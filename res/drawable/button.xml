@@ -1,27 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-android:shape="rectangle" android:padding="10dp">
-<!-- you can use any color you want I used here gray color-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >    
 
-        <item>        
-        <shape>
-            <gradient
-                android:endColor="#fff0ff"
-                android:startColor="#fff0ff"
-                android:angle="270" />
-            <stroke
-                android:width="3dp"
-                android:color="#fff0ff" />
-    <corners
-     android:bottomRightRadius="10dp"
-     android:bottomLeftRadius="10dp"
-  android:topLeftRadius="10dp"
-  android:topRightRadius="10dp"/>
-            <padding
-                android:left="10dp"
-                android:top="10dp"
-                android:right="10dp"
-                android:bottom="10dp" />
-        </shape>
-    </item>
-</shape>
+ <item android:state_pressed="true">
+    <shape  >
+    <solid android:color="@color/blue"/>
+    <corners 
+    android:radius="@dimen/corner_radius"/>
+        <stroke android:width="@dimen/button_border" android:color="#000000" />
+    </shape>
+ </item>
+
+ <item android:state_focused="true" >
+    <shape xmlns:android="http://schemas.android.com/apk/res/android" >
+           <gradient
+		      android:startColor="@color/babyblue"
+		      android:endColor="@color/lightbabyblue"
+		      android:angle="270" />
+    <corners 
+    android:radius="@dimen/corner_radius"/>
+        <stroke android:width="@dimen/button_border" android:color="#000000" />
+    </shape>
+ </item>
+
+ <item android:state_focused="false" >
+    <shape xmlns:android="http://schemas.android.com/apk/res/android" >
+<!--     <solid android:color="@color/babyblue"/> -->
+           <gradient
+		      android:startColor="@color/babyblue"
+		      android:endColor="@color/lightbabyblue"
+		      android:angle="270" />
+    <corners 
+    android:radius="@dimen/corner_radius"/>
+        <stroke android:width="@dimen/button_border" android:color="#000000" />
+    </shape>   
+ </item>
+
+ <item android:state_pressed="false" >
+    <shape xmlns:android="http://schemas.android.com/apk/res/android" >
+           <gradient
+		      android:startColor="@color/babyblue"
+		      android:endColor="@color/lightbabyblue"
+		      android:angle="270" />
+
+    <corners 
+    android:radius="@dimen/corner_radius"
+    />
+    <stroke android:width="@dimen/button_border" android:color="#000000" />
+    </shape>
+ </item> 
+</selector>
