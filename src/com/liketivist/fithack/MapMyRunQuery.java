@@ -1,5 +1,8 @@
 package com.liketivist.fithack;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,13 +74,16 @@ public abstract class MapMyRunQuery {
          public void onResponseReceived(String response) {
             // TODO Auto-generated method stub
             Log.d("FitHack",response);
-//            try {
-//               XmlPullParser parser = Xml.newPullParser();
-//               parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-//               parser.setInput(IOUtils.toInputStream(response), null);
-//            } catch (Exception e) {
-//               
-//            }
+            try {
+               XmlPullParser parser = Xml.newPullParser();
+               parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+               parser.setInput(new ByteArrayInputStream(response.getBytes()), null);
+               while (parser.next() != XmlPullParser.END_TAG) {
+                  Log.d("FitHack", "parser: " + parser.getName());
+               }
+            } catch (Exception e) {
+               
+            }
          }
          
       }.execute();
