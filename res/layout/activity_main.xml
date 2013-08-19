@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <EditText
+    <TextView
         android:id="@+id/editText1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,35 +16,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:ems="10"
-        android:text="@string/appname"
-        android:textColor="#edbb24"
         android:gravity="center_horizontal"
-        android:textStyle="italic" >
+        android:inputType="none"
+        android:text="@string/appname"
+        android:textColor="@color/orangy"
+        android:textSize="36dp"
+        android:textStyle="italic|bold" >
 
         <requestFocus />
-    </EditText>
-
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editText1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp"
-        android:ems="10"
-        android:gravity="center_horizontal"
-        android:text="@string/tagline" />
-
-    <EditText
-        android:id="@+id/editText3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/theButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="59dp"
-        android:ems="10"
-        android:gravity="center_horizontal"
-        android:text="@string/description" />
+    </TextView>
 
     <Button
         android:id="@+id/theButton"
@@ -52,7 +32,37 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/button"
-        android:text="@string/buttontext" />
+        android:background="@drawable/button2"
+        android:minHeight="48dp"
+        android:text="@string/buttontext"
+        android:textColor="@color/white"
+        android:textSize="@dimen/button_text_size"
+        android:width="220dp" />
+
+    <TextView
+        android:id="@+id/editText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText1"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:text="@string/tagline"
+        android:textColor="@color/orangy"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/editText3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText1"
+        android:layout_alignRight="@+id/editText1"
+        android:layout_below="@+id/theButton"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:text="@string/description"
+        android:textColor="@color/dark_gray"
+        android:textSize="16dp" />
 
 </RelativeLayout>

@@ -6,6 +6,6 @@
     <string name="hello_world">Hello world!</string>
 	<string name="appname">INSTARUN</string>
 	<string name="tagline">Don\'t Think. Just Run.</string>
-	<string name="description">Crowd-curated run or walk routes.Instantly, wherever you are.PUSH. THE. BUTTON.</string>
+	<string name="description">Crowd-curated run or walk routes.\nInstantly, wherever you are.\nPUSH. THE. BUTTON.</string>
 <string name="buttontext">GET YOUR ROUTE</string>
 </resources>

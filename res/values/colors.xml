@@ -3,4 +3,8 @@
      <color name="blue">#00f</color>
      <color name="green">#0f0</color>
      <color name="red">#f00</color>
+     <color name="white">#fff</color>
+     <color name="babyblue">#3399ff</color>
+     <color name="orangy">#edbb24</color>
+     <color name="dark_gray">#6A6A6A</color>
 </resources>
