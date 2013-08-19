@@ -5,6 +5,7 @@
      <color name="red">#f00</color>
      <color name="white">#fff</color>
      <color name="babyblue">#3399ff</color>
+     <color name="lightbabyblue">#99B2FF</color>
      <color name="orangy">#edbb24</color>
      <color name="dark_gray">#6A6A6A</color>
 </resources>
