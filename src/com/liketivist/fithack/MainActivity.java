@@ -1,5 +1,7 @@
 package com.liketivist.fithack;
 
+import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -120,8 +122,9 @@ public class MainActivity extends Activity implements OnClickListener {
          MapMyRunQuery mmrq = new MapMyRunQuery() {
 
             @Override
-            public void onDone(String response) {
-               Toast.makeText(c, response, Toast.LENGTH_LONG).show();
+            public void onDone(ArrayList<RoutePoint> routePoints) {
+               // Make call to maps API here
+               Toast.makeText(c, String.format("route start: %.2f,%.2f", routePoints.get(0).getLatitude(), routePoints.get(0).getLongitude()), Toast.LENGTH_LONG).show();
             }
 
          };
