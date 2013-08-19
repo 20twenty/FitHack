@@ -61,7 +61,7 @@ public abstract class MyHttpGet extends AsyncTask<Void, Void, String> {
 
    @Override
    protected void onPostExecute(String result) {
-      Log.d("FitHack", result);
+//      Log.d("FitHack", result);
       onResponseReceived(result);
    }
 
