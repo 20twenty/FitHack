@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLng;
+
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -113,6 +114,12 @@ public class MainActivity extends Activity implements OnClickListener {
          final Context c = this;
          // Toast.makeText(this, "You pressed THE BUTTON",
          // Toast.LENGTH_LONG).show();
+         
+         LinearLayout top_layout = (LinearLayout) findViewById(R.id.top_layout);
+         LinearLayout map_layout = (LinearLayout) findViewById(R.id.map);
+         top_layout.setVisibility(View.GONE);
+         map_layout.setVisibility(View.VISIBLE);
+         
          MapMyRunQuery mmrq = new MapMyRunQuery() {
 
             @Override
