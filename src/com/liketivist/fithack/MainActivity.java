@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -114,10 +113,9 @@ public class MainActivity extends Activity implements OnClickListener {
          // Toast.makeText(this, "You pressed THE BUTTON",
          // Toast.LENGTH_LONG).show();
          
-         //RelativeLayout top_layout = (RelativeLayout) findViewById(R.id.top_layout);
-         //LinearLayout map_layout = (LinearLayout) findViewById(R.id.map);
-         //top_layout.setVisibility(View.GONE);
-         //map_layout.setVisibility(View.VISIBLE);
+
+         RelativeLayout start_layout = (RelativeLayout) findViewById(R.id.start_layout);
+         start_layout.setVisibility(View.GONE);
          
          MapMyRunQuery mmrq = new MapMyRunQuery() {
 
