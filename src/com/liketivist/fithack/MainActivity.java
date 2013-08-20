@@ -3,15 +3,20 @@ package com.liketivist.fithack;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,18 +26,27 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
    private Button _theButton;
-   static final LatLng HAMBURG = new LatLng(53.558, 9.927);
-   static final LatLng KIEL = new LatLng(53.551, 9.993);
    private GoogleMap map;
-	
-   private final LocationListener locationListener = new LocationListener() {
+   LocationManager _locationManager;
+   double _latitude;
+   double _longitude;
+   boolean _ready;
+   static private double _distance = 2.0;
+   
+
+   private final LocationListener _locationListener = new LocationListener() {
 
       public void onLocationChanged(Location location) {
          updateWithNewLocation(location);
+         Log.d("FitHack",String.format("onLocationChanged: %f,%f", location.getLatitude(), location.getLongitude()));
+         Log.d("FitHack",String.format("Accuracy: %f", location.getAccuracy()));
+         stopLocationRequests();
       }
 
       public void onProviderDisabled(String provider) {
@@ -49,34 +63,50 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      this.requestWindowFeature(Window.FEATURE_NO_TITLE);
       setContentView(R.layout.activity_main);
       _theButton = (Button) this.findViewById(R.id.theButton);
       _theButton.setOnClickListener(this);
 
-      LocationManager locManager;
-      locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-      locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L,
-            500.0f, locationListener);
-      Location location = locManager
-            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-      if (location != null) {
-         double latitude = location.getLatitude();
-         double longitude = location.getLongitude();
+      _ready = false;
+      
+      _locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+      if(_locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+         _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, _locationListener);
+      } else if(_locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+         _locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 500.0f, _locationListener);
+      } else {
+         Intent gpsOptionsIntent = new Intent(  
+               android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);  
+           startActivity(gpsOptionsIntent);
       }
+      
+//      Location lastLocationGPS = _locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//      if (lastLocationGPS != null) {
+//         double latitude = lastLocationGPS.getLatitude();
+//         double longitude = lastLocationGPS.getLongitude();
+//         Log.d("FitHack",String.format("onCreate GPSLastLocation: %f,%f", lastLocationGPS.getLatitude(), lastLocationGPS.getLongitude()));
+//      }
+//      
+//      Location lastLocationNetwork = _locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//      if (lastLocationNetwork != null) {
+//         double latitude = lastLocationNetwork.getLatitude();
+//         double longitude = lastLocationNetwork.getLongitude();
+//         Log.d("FitHack",String.format("onCreate networkLastLocation: %f,%f", lastLocationNetwork.getLatitude(), lastLocationNetwork.getLongitude()));
+//      }
+      
+   }
+   
+   private void stopLocationRequests() {
+      _locationManager.removeUpdates(_locationListener);
    }
 
    private void updateWithNewLocation(Location location) {
-//      TextView myLocationText = (TextView) findViewById(R.id.text);
-      String latLongString = "";
       if (location != null) {
-         double lat = location.getLatitude();
-         double lng = location.getLongitude();
-         latLongString = "Lat:" + lat + "\nLong:" + lng;
-      } else {
-         latLongString = "No location found";
+         _latitude = location.getLatitude();
+         _longitude = location.getLongitude();
+         _ready = true;
       }
-      Toast.makeText(this, "Your Current Position is:\n" + latLongString, Toast.LENGTH_LONG);
-//      myLocationText.setText("Your Current Position is:\n" + latLongString);
    }
 
    @Override
@@ -85,46 +115,66 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       return true;
    }
 
-   public void doTheMapYo() {
-	    setContentView(R.layout.activity_main);
-	    map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-	        .getMap();
-	    Marker hamburg = map.addMarker(new MarkerOptions().position(HAMBURG)
-	        .title("Hamburg"));
-	    Marker kiel = map.addMarker(new MarkerOptions()
-	        .position(KIEL)
-	        .title("Kiel")
-	        .snippet("Kiel is cool")
-	        .icon(BitmapDescriptorFactory
-	            .fromResource(R.drawable.ic_launcher)));
+   public void drawTheDataOnTheMap(LatLng CURRENT_LOCATION, ArrayList<RoutePoint> routePoints) {
+	    
+	    map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+	    
+	 // Instantiates a new Polygon object and set options
+	    PolygonOptions rectOptions = new PolygonOptions();
+	    rectOptions.strokeColor(Color.BLUE);
 
-	    // Move the camera instantly to hamburg with a zoom of 15.
-	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(HAMBURG, 15));
+	    
+	    //ADD THE POINTS HERE
+		for (int i = 0; i < routePoints.size(); i++) {
+			final LatLng THIS_POINT = new LatLng(routePoints.get(i).getLatitude(), routePoints.get(i).getLongitude());
+		    rectOptions.add(THIS_POINT);
+		}
+		
+		// Get back the Polygon AND ATTACH IT TO THE MAP
+		Polygon polygon = map.addPolygon(rectOptions);
+
+   		//DROP A MARKER ON THE CURRENT LOCATION
+		Marker currentMarker = map.addMarker(new MarkerOptions()
+			.position(CURRENT_LOCATION)
+		   .title("Current Location")
+	        .icon(BitmapDescriptorFactory
+	        .fromResource(R.drawable.ic_launcher)));
+
+	    // Move the camera instantly to THE CURRENT LOCATION with a zoom of 15.
+	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_LOCATION, 15));
 
 	    // Zoom in, animating the camera.
-	    map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+	    map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
 
    }
+   
    @Override
    public void onClick(View v) {
       if (v == _theButton) {
          final Context c = this;
-         // Toast.makeText(this, "You pressed THE BUTTON",
-         // Toast.LENGTH_LONG).show();
-         
+         if(_ready) {
+            RelativeLayout start_layout = (RelativeLayout) findViewById(R.id.start_layout);
+            start_layout.setVisibility(View.GONE);
 
-         findViewById(R.id.start_layout).setVisibility(View.GONE);
-         
-         MapMyRunQuery mmrq = new MapMyRunQuery() {
+            MapMyRunQuery mmrq = new MapMyRunQuery() {
 
-            @Override
-            public void onDone(ArrayList<RoutePoint> routePoints) {
-               // Make call to maps API here
-               Toast.makeText(c, String.format("route start: %.2f,%.2f", routePoints.get(0).getLatitude(), routePoints.get(0).getLongitude()), Toast.LENGTH_LONG).show();
-            }
+               @Override
+               public void onDone(ArrayList<RoutePoint> routePoints) {
+                  // Make call to maps API here
+                  Toast.makeText(
+                        c,
+                        String.format("route start: %.2f,%.2f", routePoints.get(0).getLatitude(), routePoints.get(0)
+                              .getLongitude()), Toast.LENGTH_LONG).show();
+                  findViewById(R.id.start_layout).setVisibility(View.GONE);
+                  final LatLng CURRENT_LOCATION = new LatLng(_latitude, _longitude);
+                  drawTheDataOnTheMap(CURRENT_LOCATION, routePoints);
+               }
 
-         };
-         mmrq.getRoute(0.1f, 45.60f, -122.60f);
+            };
+            mmrq.getRoute(_distance, _latitude, _longitude);
+         } else {
+            Toast.makeText(c, "Waiting for current location", Toast.LENGTH_LONG).show();
+         }
       }
    }
 
