@@ -11,25 +11,17 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
-public abstract class MyHttpGet extends AsyncTask<Void, Void, String> {
+public class MyHttpGet {
 
-   private String _url;
-
-   public MyHttpGet(String url) {
-      _url = url;
-   }
-
-   @Override
-   protected String doInBackground(Void... params) {
-      Log.d("FitHack", "Executing query: " + _url);
+   public static String get(String url) {
+      Log.d("FitHack", "Executing query: " + url);
       String responseString = null;
       HttpClient httpclient = new DefaultHttpClient();
 
       // Prepare a request object
-      HttpGet httpget = new HttpGet(_url);
+      HttpGet httpget = new HttpGet(url);
 
       // Execute the request
       HttpResponse response;
@@ -58,15 +50,7 @@ public abstract class MyHttpGet extends AsyncTask<Void, Void, String> {
       // TODO Auto-generated method stub
       return responseString;
    }
-
-   @Override
-   protected void onPostExecute(String result) {
-//      Log.d("FitHack", result);
-      onResponseReceived(result);
-   }
-
-   public abstract void onResponseReceived(String response);
-
+   
    private static String convertStreamToString(InputStream is) {
       /*
        * To convert the InputStream to String we use the
