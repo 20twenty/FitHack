@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -110,6 +111,22 @@ public class MainActivity extends Activity implements OnClickListener {
    public boolean onCreateOptionsMenu(Menu menu) {
       getMenuInflater().inflate(R.menu.main, menu);
       return true;
+   }
+
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+      // TODO Auto-generated method stub
+      switch (item.getItemId()) {
+      case R.id.settings:
+         Intent intent = new Intent(this, SettingsActivity.class);
+         startActivity(intent);
+         return true;
+      case R.id.exit:
+         finish();
+         return true;
+      default:
+         return super.onOptionsItemSelected(item);
+      }
    }
 
    @SuppressLint("NewApi")
