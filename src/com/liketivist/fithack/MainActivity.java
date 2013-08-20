@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -37,8 +40,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    double _latitude;
    double _longitude;
    boolean _ready;
-   static private double _distance = 2.0;
-   
+   static private String _distance = "2.0";
+   private SharedPreferences _preferences;
 
    private final LocationListener _locationListener = new LocationListener() {
 
@@ -67,6 +70,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       setContentView(R.layout.activity_main);
       _theButton = (Button) this.findViewById(R.id.theButton);
       _theButton.setOnClickListener(this);
+
+      _preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
       _ready = false;
       
@@ -115,6 +120,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       return true;
    }
 
+
    public void drawTheDataOnTheMap(LatLng CURRENT_LOCATION, ArrayList<RoutePoint> routePoints) {
 	    
 	    map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -149,31 +155,52 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    }
    
    @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+      // TODO Auto-generated method stub
+      switch (item.getItemId()) {
+      case R.id.settings:
+         Intent intent = new Intent(this, SettingsActivity.class);
+         startActivity(intent);
+         return true;
+      case R.id.exit:
+         finish();
+         return true;
+      default:
+         return super.onOptionsItemSelected(item);
+      }
+   }
+		   
+   @Override
    public void onClick(View v) {
       if (v == _theButton) {
-         final Context c = this;
          if(_ready) {
+            final Context c = this;
             RelativeLayout start_layout = (RelativeLayout) findViewById(R.id.start_layout);
-            start_layout.setVisibility(View.GONE);
+            //start_layout.setVisibility(View.GONE);
 
-            MapMyRunQuery mmrq = new MapMyRunQuery() {
+            MapMyRunQuery mmrq = new MapMyRunQuery(this) {
 
                @Override
-               public void onDone(ArrayList<RoutePoint> routePoints) {
+               public void onDone(Route route) {
                   // Make call to maps API here
-                  Toast.makeText(
-                        c,
-                        String.format("route start: %.2f,%.2f", routePoints.get(0).getLatitude(), routePoints.get(0)
-                              .getLongitude()), Toast.LENGTH_LONG).show();
-                  findViewById(R.id.start_layout).setVisibility(View.GONE);
-                  final LatLng CURRENT_LOCATION = new LatLng(_latitude, _longitude);
-                  drawTheDataOnTheMap(CURRENT_LOCATION, routePoints);
+                  if(route == null) {
+                     Toast.makeText(c, "Could not find any routes near you", Toast.LENGTH_LONG).show();
+                  } else {
+                     ArrayList<RoutePoint> routePoints = route.getRoutePoints();
+                     Toast.makeText(c, route.getRouteOverview(), Toast.LENGTH_LONG).show();
+                     findViewById(R.id.start_layout).setVisibility(View.GONE);
+                     final LatLng CURRENT_LOCATION = new LatLng(_latitude, _longitude);
+                     drawTheDataOnTheMap(CURRENT_LOCATION, routePoints);
+                  }
                }
 
             };
-            mmrq.getRoute(_distance, _latitude, _longitude);
+            
+            mmrq.getRoute(Double.parseDouble(_preferences.getString("runningDistance", _distance)),
+                  Double.parseDouble(_preferences.getString("searchRadius", "1.0")),
+                  _latitude, _longitude);          
          } else {
-            Toast.makeText(c, "Waiting for current location", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Waiting for current location", Toast.LENGTH_LONG).show();
          }
       }
    }
