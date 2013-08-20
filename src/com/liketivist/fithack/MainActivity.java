@@ -2,29 +2,27 @@ package com.liketivist.fithack;
 
 import java.util.ArrayList;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends FragmentActivity implements OnClickListener {
 
    private Button _theButton;
    static final LatLng HAMBURG = new LatLng(53.558, 9.927);
@@ -87,10 +85,9 @@ public class MainActivity extends Activity implements OnClickListener {
       return true;
    }
 
-   @SuppressLint("NewApi")
    public void doTheMapYo() {
 	    setContentView(R.layout.activity_main);
-	    map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+	    map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
 	        .getMap();
 	    Marker hamburg = map.addMarker(new MarkerOptions().position(HAMBURG)
 	        .title("Hamburg"));
@@ -116,8 +113,7 @@ public class MainActivity extends Activity implements OnClickListener {
          // Toast.LENGTH_LONG).show();
          
 
-         RelativeLayout start_layout = (RelativeLayout) findViewById(R.id.start_layout);
-         start_layout.setVisibility(View.GONE);
+         findViewById(R.id.start_layout).setVisibility(View.GONE);
          
          MapMyRunQuery mmrq = new MapMyRunQuery() {
 
