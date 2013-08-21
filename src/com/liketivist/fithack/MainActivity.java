@@ -4,22 +4,23 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -226,5 +227,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
          }
       }
    }
-
+   
+   @Override
+   public void onConfigurationChanged(Configuration newConfig) {
+      super.onConfigurationChanged(newConfig);
+      Log.d("FitHack", "onConfigurationChanged called");
+   }
 }
