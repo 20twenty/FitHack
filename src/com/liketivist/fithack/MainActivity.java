@@ -122,6 +122,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    public void onBackPressed() {
       if (_mainLayout.getVisibility() == View.GONE) {
          _mainLayout.setVisibility(View.VISIBLE);
+
       } else {
          finish();
       }
@@ -209,6 +210,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
                @Override
                public void onDone(Route route) {
+            	   //TURN THE BUTTON BACK ON
+                   _theButton.setEnabled(true);
+                   
                   // Make call to maps API here
                   if(route == null) {
                      Toast.makeText(c, "Could not find any routes near you", Toast.LENGTH_LONG).show();

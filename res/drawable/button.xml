@@ -14,7 +14,6 @@
 
  <item android:state_enabled="true" >
     <shape xmlns:android="http://schemas.android.com/apk/res/android" >
-<!--     <solid android:color="@color/babyblue"/> -->
            <gradient
 		      android:startColor="@color/babyblue"
 		      android:endColor="@color/lightbabyblue"
@@ -38,8 +37,5 @@
     <stroke android:width="@dimen/button_border" android:color="#000000" />
     </shape>
  </item>
- 
-     <item
-        android:state_enabled="false"
-        android:drawable="@drawable/pushtotalkbuttondisabled" />
+
 </selector>
