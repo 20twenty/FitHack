@@ -10,21 +10,10 @@
     </shape>
  </item>
 
- <item android:state_focused="true" >
-    <shape xmlns:android="http://schemas.android.com/apk/res/android" >
-           <gradient
-		      android:startColor="@color/babyblue"
-		      android:endColor="@color/lightbabyblue"
-		      android:angle="270" />
-    <corners 
-    android:radius="@dimen/corner_radius"/>
-        <stroke android:width="@dimen/button_border" android:color="#000000" />
-    </shape>
- </item>
 
- <item android:state_focused="false" >
+
+ <item android:state_enabled="true" >
     <shape xmlns:android="http://schemas.android.com/apk/res/android" >
-<!--     <solid android:color="@color/babyblue"/> -->
            <gradient
 		      android:startColor="@color/babyblue"
 		      android:endColor="@color/lightbabyblue"
@@ -35,11 +24,11 @@
     </shape>   
  </item>
 
- <item android:state_pressed="false" >
+<item android:state_enabled="false" >
     <shape xmlns:android="http://schemas.android.com/apk/res/android" >
            <gradient
-		      android:startColor="@color/babyblue"
-		      android:endColor="@color/lightbabyblue"
+		      android:startColor="@color/dark_gray"
+		      android:endColor="@color/light_gray"
 		      android:angle="270" />
 
     <corners 
@@ -47,5 +36,6 @@
     />
     <stroke android:width="@dimen/button_border" android:color="#000000" />
     </shape>
- </item> 
+ </item>
+
 </selector>
