@@ -75,7 +75,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       _theButton = (Button) this.findViewById(R.id.theButton);
       _theButton.setOnClickListener(this);
 
-      //SUPPORT FOR HYPERLINK ON FRON
+      //SUPPORT FOR HYPERLINK ON FRONT PAGE
       TextView textView =(TextView)findViewById(R.id.editText4);
       textView.setClickable(true);
       textView.setMovementMethod(LinkMovementMethod.getInstance());
