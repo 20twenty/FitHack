@@ -46,6 +46,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    static private String _distance = "4.0";
    static private String _searchRadius = "2.0";
    private SharedPreferences _preferences;
+   RelativeLayout _mainLayout;
 
    private final LocationListener _locationListener = new LocationListener() {
 
@@ -72,6 +73,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       super.onCreate(savedInstanceState);
       this.requestWindowFeature(Window.FEATURE_NO_TITLE);
       setContentView(R.layout.activity_main);
+      _mainLayout = (RelativeLayout) findViewById(R.id.start_layout);
       _theButton = (Button) this.findViewById(R.id.theButton);
       _theButton.setOnClickListener(this);
 
@@ -113,6 +115,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       
    }
    
+   @Override
+   public void onBackPressed() {
+      if (_mainLayout.getVisibility() == View.GONE) {
+         _mainLayout.setVisibility(View.VISIBLE);
+      } else {
+         finish();
+      }
+   }
+
    private void stopLocationRequests() {
       _locationManager.removeUpdates(_locationListener);
    }
@@ -198,7 +209,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                   } else {
                      ArrayList<RoutePoint> routePoints = route.getRoutePoints();
                      Toast.makeText(c, route.getRouteOverview(), Toast.LENGTH_LONG).show();
-                     findViewById(R.id.start_layout).setVisibility(View.GONE);
+                     _mainLayout.setVisibility(View.GONE);
                      final LatLng CURRENT_LOCATION = new LatLng(_latitude, _longitude);
                      drawTheDataOnTheMap(CURRENT_LOCATION, routePoints);
                   }

@@ -24,21 +24,35 @@ public abstract class MapMyRunQuery {
       new Thread(new Runnable() {
          @Override
          public void run() {
-            String response = MyHttpGet
+            
+            try {
+               boolean done = false;
+               int limit = 100;
+               int start_record = 0;
+               ArrayList<Route> qualifyingRoutes = new ArrayList<Route>();
+               while(!done) {
+                  // http://api.mapmyfitness.com/3.1/routes/search_routes?o=json&center_longitude=-122.5471496&center_latitude=45.42289057&radius=0.5&route_type_id=1&start_record=0&limit=100
+                  String response = MyHttpGet
                   .get("http://api.mapmyfitness.com/3.1/routes/search_routes?o=json&center_longitude=" + longitude
                         + "&center_latitude=" + latitude + "&radius=" + searchRadius
-                        + "&route_type_id=1&start_record=0&limit=100");
-            try {
-               ArrayList<Route> qualifyingRoutes = new ArrayList<Route>();
-               JSONObject json = new JSONObject(response);
-               JSONArray routes = json.getJSONObject("result").getJSONObject("output").getJSONArray("routes");
-               for (int i = 0; i < routes.length(); i++) {
-                  double d = routes.getJSONObject(i).getDouble("total_distance");
-                  String route_key = routes.getJSONObject(i).getString("route_key");
-                  if (d > routeDistance * 0.95 && d < routeDistance * 1.05) {
-                     Route route = new Route(d, route_key);
-                     qualifyingRoutes.add(route);
-                     Log.d("FitHack", String.format("distance: %.2f", d));
+                        + "&route_type_id=1&start_record="+start_record+"&limit="+limit);
+                  JSONObject json = new JSONObject(response);
+                  int routeCount = json.getJSONObject("result").getJSONObject("output").getInt("count");
+                  JSONArray routes = json.getJSONObject("result").getJSONObject("output").getJSONArray("routes");
+                  Log.d("FitHack",String.format("count: %d; length: %d", routeCount, routes.length()));
+                  for (int i = 0; i < routes.length(); i++) {
+                     double d = routes.getJSONObject(i).getDouble("total_distance");
+                     String route_key = routes.getJSONObject(i).getString("route_key");
+                     if (d > routeDistance * 0.95 && d < routeDistance * 1.05) {
+                        Route route = new Route(d, route_key);
+                        qualifyingRoutes.add(route);
+                        Log.d("FitHack", String.format("distance: %.2f", d));
+                     }
+                  }
+                  if(routes.length() == limit && qualifyingRoutes.size() == 0) {
+                     start_record+=limit;
+                  } else {
+                     done = true;
                   }
                }
                Log.d("FitHack", String.format("Found %d qualifying routes", qualifyingRoutes.size()));
