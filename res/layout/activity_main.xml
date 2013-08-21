@@ -86,7 +86,7 @@
             android:ems="10"
             android:gravity="center_horizontal"
             android:text="@string/poweredby"
-            android:textColor="@color/blue"
+            android:textColor="@color/black"
             android:textSize="16dp" />
         
 
