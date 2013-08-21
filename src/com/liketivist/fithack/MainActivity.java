@@ -35,6 +35,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
@@ -152,20 +154,37 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    public void drawTheDataOnTheMap(LatLng CURRENT_LOCATION, ArrayList<RoutePoint> routePoints) {
 	    
 	    map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+	    //CLEAR THE MAP
+	    map.clear();
 	    
 	 // Instantiates a new Polygon object and set options
-	    PolygonOptions rectOptions = new PolygonOptions();
-	    rectOptions.strokeColor(Color.BLUE);
+	    PolylineOptions rectOptions = new PolylineOptions();
+	    rectOptions.color(Color.BLUE);
 
+
+	    //ADD A START MARKER
+	    map.addMarker(new MarkerOptions()
+        .position(new LatLng(routePoints.get(0).getLatitude(), routePoints.get(0).getLongitude()))
+        .title("Start")
+        //.snippet("Start")
+        .draggable(false));
+
+	    //ADD A STOP MARKER
+	    map.addMarker(new MarkerOptions()
+        .position(new LatLng(routePoints.get(routePoints.size()-1).getLatitude(), routePoints.get(routePoints.size()-1).getLongitude()))
+        .title("Stop")
+        //.snippet("Stop")
+        .draggable(false));
 	    
 	    //ADD THE POINTS HERE
 		for (int i = 0; i < routePoints.size(); i++) {
 			final LatLng THIS_POINT = new LatLng(routePoints.get(i).getLatitude(), routePoints.get(i).getLongitude());
 		    rectOptions.add(THIS_POINT);
+
 		}
 		
-		// Get back the Polygon AND ATTACH IT TO THE MAP
-		Polygon polygon = map.addPolygon(rectOptions);
+		// ATTACH THE POLYLINES TO THE MAP
+		map.addPolyline(rectOptions);
 
    		//DROP A MARKER ON THE CURRENT LOCATION
 		Marker currentMarker = map.addMarker(new MarkerOptions()
@@ -219,6 +238,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                      _theButton.setEnabled(true);
                   } else {
                      ArrayList<RoutePoint> routePoints = route.getRoutePoints();
+                     ArrayList<RoutePoint> routeCumDistance = route.getRouteCumDistance();
                      Toast.makeText(c, route.getRouteOverview(), Toast.LENGTH_LONG).show();
                      _mainLayout.setVisibility(View.GONE);
                      final LatLng CURRENT_LOCATION = new LatLng(_latitude, _longitude);
