@@ -11,6 +11,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,10 +43,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    double _latitude;
    double _longitude;
    boolean _ready;
-   static private String _distance = "2.0";
+   static private String _distance = "4.0";
+   static private String _searchRadius = "2.0";
    private SharedPreferences _preferences;
-   RelativeLayout _mainLayout;
-
 
    private final LocationListener _locationListener = new LocationListener() {
 
@@ -70,10 +72,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       super.onCreate(savedInstanceState);
       this.requestWindowFeature(Window.FEATURE_NO_TITLE);
       setContentView(R.layout.activity_main);
-      _mainLayout = (RelativeLayout) findViewById(R.id.start_layout);
       _theButton = (Button) this.findViewById(R.id.theButton);
       _theButton.setOnClickListener(this);
 
+      //SUPPORT FOR HYPERLINK ON FRON
+      TextView textView =(TextView)findViewById(R.id.editText4);
+      textView.setClickable(true);
+      textView.setMovementMethod(LinkMovementMethod.getInstance());
+      String text = "powered by <a href='https://pdxfithack.eventbrite.com/'>PDXFitHack</a>";
+      textView.setText(Html.fromHtml(text));
+      
       _preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
       _ready = false;
@@ -123,15 +131,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       return true;
    }
 
-
-   @Override
-   public void onBackPressed() {
-      if(_mainLayout.getVisibility() == View.GONE) {
-         _mainLayout.setVisibility(View.VISIBLE);
-      } else {
-         finish();
-      }
-   }
 
    public void drawTheDataOnTheMap(LatLng CURRENT_LOCATION, ArrayList<RoutePoint> routePoints) {
 	    
@@ -184,10 +183,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		   
    @Override
    public void onClick(View v) {
+	   
       if (v == _theButton) {
          if(_ready) {
             final Context c = this;
-            //start_layout.setVisibility(View.GONE);
 
             MapMyRunQuery mmrq = new MapMyRunQuery(this) {
 
@@ -199,17 +198,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                   } else {
                      ArrayList<RoutePoint> routePoints = route.getRoutePoints();
                      Toast.makeText(c, route.getRouteOverview(), Toast.LENGTH_LONG).show();
-                     _mainLayout.setVisibility(View.GONE);
+                     findViewById(R.id.start_layout).setVisibility(View.GONE);
                      final LatLng CURRENT_LOCATION = new LatLng(_latitude, _longitude);
                      drawTheDataOnTheMap(CURRENT_LOCATION, routePoints);
                   }
                }
 
             };
-            
+
             mmrq.getRoute(Double.parseDouble(_preferences.getString("runningDistance", _distance)),
-                  Double.parseDouble(_preferences.getString("searchRadius", "1.0")),
-                  _latitude, _longitude);          
+                  Double.parseDouble(_preferences.getString("searchRadius", _searchRadius)),
+                  _latitude, _longitude);  
+
          } else {
             Toast.makeText(this, "Waiting for current location", Toast.LENGTH_LONG).show();
          }
