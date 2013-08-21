@@ -74,7 +74,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       setContentView(R.layout.activity_main);
       _theButton = (Button) this.findViewById(R.id.theButton);
       _theButton.setOnClickListener(this);
-
+      //DISABLE THE BUTTON UNTIL THE LOCATION IS READY
+      _theButton.setEnabled(false);
+      
       //SUPPORT FOR HYPERLINK ON FRONT PAGE
       TextView textView =(TextView)findViewById(R.id.editText4);
       textView.setClickable(true);
@@ -122,6 +124,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
          _latitude = location.getLatitude();
          _longitude = location.getLongitude();
          _ready = true;
+         //ENABLE THE BUTTON NOW THAT THE LOCATION IS READY
+         _theButton.setEnabled(true);
       }
    }
 
@@ -183,7 +187,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		   
    @Override
    public void onClick(View v) {
-	   
+      _theButton.setEnabled(false);
+      
       if (v == _theButton) {
          if(_ready) {
             final Context c = this;
@@ -195,6 +200,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                   // Make call to maps API here
                   if(route == null) {
                      Toast.makeText(c, "Could not find any routes near you", Toast.LENGTH_LONG).show();
+                     _theButton.setEnabled(true);
                   } else {
                      ArrayList<RoutePoint> routePoints = route.getRoutePoints();
                      Toast.makeText(c, route.getRouteOverview(), Toast.LENGTH_LONG).show();
