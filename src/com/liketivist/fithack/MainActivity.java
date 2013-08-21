@@ -238,7 +238,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                      _theButton.setEnabled(true);
                   } else {
                      ArrayList<RoutePoint> routePoints = route.getRoutePoints();
-                     ArrayList<RoutePoint> routeCumDistance = route.getRouteCumDistance();
                      Toast.makeText(c, route.getRouteOverview(), Toast.LENGTH_LONG).show();
                      _mainLayout.setVisibility(View.GONE);
                      final LatLng CURRENT_LOCATION = new LatLng(_latitude, _longitude);
