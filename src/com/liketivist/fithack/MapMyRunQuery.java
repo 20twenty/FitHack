@@ -68,7 +68,7 @@ public abstract class MapMyRunQuery {
                Log.d("FitHack", String.format("Found %d qualifying routes", qualifyingRoutes.size()));
                Route theRoute = null;
                if(qualifyingRoutes.size() > 0) {
-                  Route r = qualifyingRoutes.get((int) Math.round(Math.random()*qualifyingRoutes.size()));
+                  Route r = qualifyingRoutes.get((int) Math.round(Math.random()*(qualifyingRoutes.size()-1)));
                   addRoutePoints(r);
                   theRoute = r;
                }
