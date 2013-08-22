@@ -89,7 +89,7 @@
             android:text="@string/poweredby"
             android:textColor="@color/black"
             android:textSize="16dp" />
-        
+
 </RelativeLayout>
 
         <fragment

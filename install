@@ -1,0 +1,4 @@
+ant $1 
+adb install -r bin/FitHack-$1.apk
+adb shell "am start -a android.intent.action.MAIN -n com.liketivist.fithack/.MainActivity"
+
