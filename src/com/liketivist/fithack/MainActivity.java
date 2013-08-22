@@ -2,9 +2,12 @@ package com.liketivist.fithack;
 
 import java.util.ArrayList;
 
+import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -23,7 +26,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +57,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    static private String _searchRadius = "2.0";
    private SharedPreferences _preferences;
    RelativeLayout _mainLayout;
+
 
    private final LocationListener _locationListener = new LocationListener() {
 
@@ -83,6 +89,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       _theButton.setOnClickListener(this);
       //DISABLE THE BUTTON UNTIL THE LOCATION IS READY
       _theButton.setEnabled(false);
+      findViewById(R.id.editTextLocation).setVisibility(View.VISIBLE);
+      findViewById(R.id.editTextRoute).setVisibility(View.GONE);
       
       //SUPPORT FOR HYPERLINK ON FRONT PAGE
       TextView textView =(TextView)findViewById(R.id.editText4);
@@ -119,13 +127,24 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 //         double longitude = lastLocationNetwork.getLongitude();
 //         Log.d("FitHack",String.format("onCreate networkLastLocation: %f,%f", lastLocationNetwork.getLatitude(), lastLocationNetwork.getLongitude()));
 //      }
-      
+      ProgressDialog pd = new ProgressDialog(MainActivity.this);
+      pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+      pd.setMessage("Working...");
+      pd.setIndeterminate(true);
+      pd.setCancelable(false);
+
+      // now fetch the results
+
+
+      // remove progress dialog
+//      pd.dismiss();
    }
    
    @Override
    public void onBackPressed() {
       if (_mainLayout.getVisibility() == View.GONE) {
          _mainLayout.setVisibility(View.VISIBLE);
+         findViewById(R.id.editTextRoute).setVisibility(View.GONE);
 
       } else {
          finish();
@@ -143,6 +162,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
          _ready = true;
          //ENABLE THE BUTTON NOW THAT THE LOCATION IS READY
          _theButton.setEnabled(true);
+         findViewById(R.id.progressBar1).setVisibility(View.GONE);
+         findViewById(R.id.editTextRoute).setVisibility(View.GONE);
+         findViewById(R.id.editTextLocation).setVisibility(View.GONE);
       }
    }
 
@@ -233,7 +255,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    @Override
    public void onClick(View v) {
       _theButton.setEnabled(false);
-      
+      findViewById(R.id.progressBar1).setVisibility(View.VISIBLE);
+      findViewById(R.id.editTextRoute).setVisibility(View.VISIBLE);
       if (v == _theButton) {
          if(_ready) {
             final Context c = this;
@@ -244,6 +267,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                public void onDone(Route route) {
             	   //TURN THE BUTTON BACK ON
                    _theButton.setEnabled(true);
+                   findViewById(R.id.progressBar1).setVisibility(View.GONE);
+                   findViewById(R.id.editTextLocation).setVisibility(View.GONE);
                    
                   // Make call to maps API here
                   if(route == null) {
@@ -273,6 +298,25 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    @Override
    public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
+      setContentView(R.layout.activity_main);
       Log.d("FitHack", "onConfigurationChanged called");
+    //Get current screen orientation
+//      Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+//      int orientation = display.getOrientation();
+//       switch(orientation) {
+//          case Configuration.ORIENTATION_PORTRAIT:
+//              //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//              setContentView(R.layout.activity_main);
+//              Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+//              break;
+//          case Configuration.ORIENTATION_LANDSCAPE:
+//              //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//              setContentView(R.layout.activity_main);
+//              Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+//              break;                   
+//      } 
+      
    }
+   
+   
 }

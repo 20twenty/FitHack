@@ -76,19 +76,55 @@
         android:textSize="@dimen/button_text_size"
         android:width="@dimen/button_width" />
 
-        <TextView
-            android:id="@+id/editText4"
+       <TextView
+           android:id="@+id/editText4"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignLeft="@+id/editText3"
+           android:layout_alignParentBottom="true"
+           android:layout_alignRight="@+id/editText3"
+           android:layout_marginBottom="23dp"
+           android:ems="10"
+           android:gravity="center_horizontal"
+           android:text="@string/poweredby"
+           android:textColor="@color/black"
+           android:textSize="16dp" />
+        
+    <TextView
+        android:id="@+id/editTextRoute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText1"
+        android:layout_alignRight="@+id/editText1"
+        android:layout_above="@+id/progressBar1"
+        android:layout_marginBottom="10dp"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:text="@string/findingroute"
+        android:textColor="@color/red"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/editTextLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText1"
+        android:layout_alignRight="@+id/editText1"
+        android:layout_above="@+id/progressBar1"
+        android:layout_marginBottom="10dp"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:text="@string/findinglocation"
+        android:textColor="@color/red"
+        android:textSize="16dp" />
+        
+        <ProgressBar
+            android:id="@+id/progressBar1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/editText3"
-            android:layout_alignParentBottom="true"
-            android:layout_alignRight="@+id/editText3"
-            android:layout_marginBottom="23dp"
-            android:ems="10"
-            android:gravity="center_horizontal"
-            android:text="@string/poweredby"
-            android:textColor="@color/black"
-            android:textSize="16dp" />
+            android:layout_above="@+id/editText4"
+            android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
 

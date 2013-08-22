@@ -9,4 +9,6 @@
 	<string name="description">Crowd-curated run or walk routes.\nInstantly, wherever you are.\nPUSH. THE. BUTTON.</string>
 	<string name="buttontext">GET YOUR ROUTE</string>
 	<string name="poweredby">powered by PDXFitHack</string>
+	<string name="findinglocation">Finding current location.\nPlease wait...</string>
+	<string name="findingroute">Finding an awesome route.\nPlease wait...</string>
 </resources>
