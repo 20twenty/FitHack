@@ -31,11 +31,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
@@ -186,8 +182,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// ATTACH THE POLYLINES TO THE MAP
 		map.addPolyline(rectOptions);
 
-   		//DROP A MARKER ON THE CURRENT LOCATION
-		Marker currentMarker = map.addMarker(new MarkerOptions()
+   		//PUT A MARKER ON THE CURRENT LOCATION
+		map.addMarker(new MarkerOptions()
 			.position(CURRENT_LOCATION)
 		   .title("Current Location")
 	        .icon(BitmapDescriptorFactory
@@ -238,7 +234,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                      _theButton.setEnabled(true);
                   } else {
                      ArrayList<RoutePoint> routePoints = route.getRoutePoints();
-                     ArrayList<RoutePoint> routeCumDistance = route.getRouteCumDistance();
                      Toast.makeText(c, route.getRouteOverview(), Toast.LENGTH_LONG).show();
                      _mainLayout.setVisibility(View.GONE);
                      final LatLng CURRENT_LOCATION = new LatLng(_latitude, _longitude);
