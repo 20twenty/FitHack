@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,9 +30,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -150,6 +156,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    public void drawTheDataOnTheMap(LatLng CURRENT_LOCATION, ArrayList<RoutePoint> routePoints) {
 	    
 	    map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+	    
 	    //CLEAR THE MAP
 	    map.clear();
 	    
@@ -171,12 +178,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         .title("Stop")
         //.snippet("Stop")
         .draggable(false));
+
+	    //PREP AN OBJECT TO MAKE ALL DATAPOINTS VISIBLE IN THE INITIAL SCREEN
+        final Builder boundsBuilder = new LatLngBounds.Builder();
+        boundsBuilder.include(CURRENT_LOCATION);
 	    
 	    //ADD THE POINTS HERE
 		for (int i = 0; i < routePoints.size(); i++) {
 			final LatLng THIS_POINT = new LatLng(routePoints.get(i).getLatitude(), routePoints.get(i).getLongitude());
 		    rectOptions.add(THIS_POINT);
-
+		    boundsBuilder.include(THIS_POINT); 
 		}
 		
 		// ATTACH THE POLYLINES TO THE MAP
@@ -189,12 +200,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	        .icon(BitmapDescriptorFactory
 	        .fromResource(R.drawable.ic_launcher)));
 
-	    // Move the camera instantly to THE CURRENT LOCATION with a zoom of 15.
-	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_LOCATION, 15));
-
-	    // Zoom in, animating the camera.
-	    map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
-
+	   
+	    LatLngBounds bounds = boundsBuilder.build();
+	    
+	    //COMPUTE SCREEN SIZE	    
+	    Display display = getWindowManager().getDefaultDisplay(); 
+	    int width = display.getWidth();  // deprecated
+	    int height = display.getHeight();  // deprecated
+		final int padding = 50;	//BUFFER FROM OUTER EDGE
+	    
+	    //SET THE ZOOM AND CENTER ACCORDING TO THE POLYLINES + CURRENT LOCATION
+		map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,width,height,padding));
+		
    }
    
    @Override
