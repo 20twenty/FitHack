@@ -2,6 +2,7 @@ package com.liketivist.fithack;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -235,6 +236,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		
    }
    
+   @SuppressLint("NewApi")
    private static Point getDisplaySize(final Display display) {
 	    final Point point = new Point();
 	    try {
