@@ -288,7 +288,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                      _theButton.setEnabled(true);
                   } else {
                      ArrayList<RoutePoint> routePoints = route.getRoutePoints();
-                     Toast.makeText(c, route.getRouteOverview(), Toast.LENGTH_LONG).show();
+                     Toast.makeText(c, route.getRouteOverview(_latitude,_longitude), Toast.LENGTH_LONG).show();
                      _mainLayout.setVisibility(View.GONE);
                      final LatLng CURRENT_LOCATION = new LatLng(_latitude, _longitude);
                      drawTheDataOnTheMap(CURRENT_LOCATION, routePoints);
