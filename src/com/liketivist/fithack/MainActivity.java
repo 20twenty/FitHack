@@ -2,7 +2,6 @@ package com.liketivist.fithack;
 
 import java.util.ArrayList;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +11,8 @@ import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -83,10 +84,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       _mainLayout = (RelativeLayout) findViewById(R.id.start_layout);
       _theButton = (Button) this.findViewById(R.id.theButton);
       _theButton.setOnClickListener(this);
+      
+      if(!isNetworkAvailable(this)) {
+          _theButton.setEnabled(false);
+          findViewById(R.id.editTextNetwork).setVisibility(View.VISIBLE);
+          findViewById(R.id.editTextLocation).setVisibility(View.GONE);
+          findViewById(R.id.editTextRoute).setVisibility(View.GONE);
+          findViewById(R.id.progressBar1).setVisibility(View.GONE);
+          return;  
+      }
+   
       //DISABLE THE BUTTON UNTIL THE LOCATION IS READY
       _theButton.setEnabled(false);
       findViewById(R.id.editTextLocation).setVisibility(View.VISIBLE);
       findViewById(R.id.editTextRoute).setVisibility(View.GONE);
+      findViewById(R.id.editTextNetwork).setVisibility(View.GONE);
       
       //SUPPORT FOR HYPERLINK ON FRONT PAGE
       TextView textView =(TextView)findViewById(R.id.editText4);
@@ -123,17 +135,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 //         double longitude = lastLocationNetwork.getLongitude();
 //         Log.d("FitHack",String.format("onCreate networkLastLocation: %f,%f", lastLocationNetwork.getLatitude(), lastLocationNetwork.getLongitude()));
 //      }
-      ProgressDialog pd = new ProgressDialog(MainActivity.this);
-      pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-      pd.setMessage("Working...");
-      pd.setIndeterminate(true);
-      pd.setCancelable(false);
 
-      // now fetch the results
-
-
-      // remove progress dialog
-//      pd.dismiss();
    }
    
    @Override
@@ -243,7 +245,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	        point.y = display.getHeight();
 	    }
 	    return point;
-	}
+   }
+   
+
    
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
@@ -302,6 +306,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
          }
       }
    }
+   
+   public static boolean isNetworkAvailable(Context context) {
+	     ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	     if (connectivity != null) {
+	        NetworkInfo[] info = connectivity.getAllNetworkInfo();
+	        if (info != null) {
+	           for (int i = 0; i < info.length; i++) {
+	              if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+	                 return true;
+	              }
+	           }
+	        }
+	     }
+	     return false;
+	}
    
    @Override
    public void onConfigurationChanged(Configuration newConfig) {
