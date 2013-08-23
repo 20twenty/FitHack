@@ -2,12 +2,10 @@ package com.liketivist.fithack;
 
 import java.util.ArrayList;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -26,24 +24,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.analytics.tracking.android.EasyTracker;
+
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
@@ -226,19 +222,31 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	    LatLngBounds bounds = boundsBuilder.build();
 	    
 	    //COMPUTE SCREEN SIZE	    
-	    Display display = getWindowManager().getDefaultDisplay(); 
-	    int width = display.getWidth();  // deprecated
-	    int height = display.getHeight();  // deprecated
+	    //Display display = getWindowManager().getDefaultDisplay(); 
+	    //int width = display.getWidth();  // deprecated
+	    //int height = display.getHeight();  // deprecated
+	    Point size = getDisplaySize(this.getWindowManager().getDefaultDisplay());
 		final int padding = 50;	//BUFFER FROM OUTER EDGE
 	    
 	    //SET THE ZOOM AND CENTER ACCORDING TO THE POLYLINES + CURRENT LOCATION
-		map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,width,height,padding));
+		map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,size.x,size.y,padding));
 		
    }
    
+   private static Point getDisplaySize(final Display display) {
+	    final Point point = new Point();
+	    try {
+	        display.getSize(point);
+	    } catch (java.lang.NoSuchMethodError ignore) {
+	    	// SUPPPORT FOR OLDER DEVICES
+	        point.x = display.getWidth();
+	        point.y = display.getHeight();
+	    }
+	    return point;
+	}
+   
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
-      // TODO Auto-generated method stub
       switch (item.getItemId()) {
       case R.id.settings:
          Intent intent = new Intent(this, SettingsActivity.class);
@@ -298,25 +306,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    @Override
    public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
-      setContentView(R.layout.activity_main);
       Log.d("FitHack", "onConfigurationChanged called");
-    //Get current screen orientation
-//      Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
-//      int orientation = display.getOrientation();
-//       switch(orientation) {
-//          case Configuration.ORIENTATION_PORTRAIT:
-//              //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//              setContentView(R.layout.activity_main);
-//              Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-//              break;
-//          case Configuration.ORIENTATION_LANDSCAPE:
-//              //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//              setContentView(R.layout.activity_main);
-//              Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-//              break;                   
-//      } 
       
    }
-   
+
+   @Override
+   public void onStart() {
+     super.onStart();
+     EasyTracker.getInstance(this).activityStart(this);
+   }
+
+   @Override
+   public void onStop() {
+     super.onStop();
+     EasyTracker.getInstance(this).activityStop(this);
+   }
+
    
 }
