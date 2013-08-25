@@ -12,4 +12,6 @@
 	<string name="findinglocation">Finding current location.\nPlease wait...</string>
 	<string name="findingroute">Finding an awesome route.\nPlease wait...</string>
 	<string name="nonetwork">No internet connection established.\nPlease connect to network.</string>
+	<string name="default_distance">3.0</string>
+	<string name="default_search_radius">0.5</string>
 </resources>

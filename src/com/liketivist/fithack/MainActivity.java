@@ -51,8 +51,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    double _latitude;
    double _longitude;
    boolean _ready;
-   static private String _distance = "4.0";
-   static private String _searchRadius = "2.0";
    private SharedPreferences _preferences;
    RelativeLayout _mainLayout;
 
@@ -85,6 +83,23 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       _mainLayout = (RelativeLayout) findViewById(R.id.start_layout);
       _theButton = (Button) this.findViewById(R.id.theButton);
       _theButton.setOnClickListener(this);
+
+      //SUPPORT FOR HYPERLINK ON FRONT PAGE
+      TextView textView =(TextView)findViewById(R.id.editText4);
+      textView.setClickable(true);
+      textView.setMovementMethod(LinkMovementMethod.getInstance());
+      String text = "powered by <a href='https://pdxfithack.eventbrite.com/'>PDXFitHack</a>";
+      textView.setText(Html.fromHtml(text));
+      
+      _preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+   }
+   
+   @Override
+   protected void onResume() {
+      super.onResume();
+
+      findViewById(R.id.progressBar1).setVisibility(View.VISIBLE);
       
       if(!isNetworkAvailable(this)) {
           _theButton.setEnabled(false);
@@ -95,23 +110,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
           return;  
       }
    
+      //_ready GETS UPDATED BY THE LOCATION LISTENER
+      _ready = false;
+
       //DISABLE THE BUTTON UNTIL THE LOCATION IS READY
       _theButton.setEnabled(false);
       findViewById(R.id.editTextLocation).setVisibility(View.VISIBLE);
       findViewById(R.id.editTextRoute).setVisibility(View.GONE);
       findViewById(R.id.editTextNetwork).setVisibility(View.GONE);
-      
-      //SUPPORT FOR HYPERLINK ON FRONT PAGE
-      TextView textView =(TextView)findViewById(R.id.editText4);
-      textView.setClickable(true);
-      textView.setMovementMethod(LinkMovementMethod.getInstance());
-      String text = "powered by <a href='https://pdxfithack.eventbrite.com/'>PDXFitHack</a>";
-      textView.setText(Html.fromHtml(text));
-      
-      _preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-      _ready = false;
-      
+      //GET THE LOCATION
       _locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
       if(_locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
          _locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, _locationListener);
@@ -122,23 +130,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);  
            startActivity(gpsOptionsIntent);
       }
-      
-//      Location lastLocationGPS = _locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//      if (lastLocationGPS != null) {
-//         double latitude = lastLocationGPS.getLatitude();
-//         double longitude = lastLocationGPS.getLongitude();
-//         Log.d("FitHack",String.format("onCreate GPSLastLocation: %f,%f", lastLocationGPS.getLatitude(), lastLocationGPS.getLongitude()));
-//      }
-//      
-//      Location lastLocationNetwork = _locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//      if (lastLocationNetwork != null) {
-//         double latitude = lastLocationNetwork.getLatitude();
-//         double longitude = lastLocationNetwork.getLongitude();
-//         Log.d("FitHack",String.format("onCreate networkLastLocation: %f,%f", lastLocationNetwork.getLatitude(), lastLocationNetwork.getLongitude()));
-//      }
 
    }
-   
+
+   @Override
+   public void onStart() {
+     super.onStart();
+     EasyTracker.getInstance(this).activityStart(this);
+   }
+
+   @Override
+   public void onStop() {
+     super.onStop();
+     EasyTracker.getInstance(this).activityStop(this);
+   }
+
    @Override
    public void onBackPressed() {
       if (_mainLayout.getVisibility() == View.GONE) {
@@ -299,8 +305,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
             };
 
-            mmrq.getRoute(Double.parseDouble(_preferences.getString("runningDistance", _distance)),
-                  Double.parseDouble(_preferences.getString("searchRadius", _searchRadius)),
+            mmrq.getRoute(Double.parseDouble(_preferences.getString("runningDistance", c.getString(R.string.default_distance))),
+                  Double.parseDouble(_preferences.getString("searchRadius", c.getString(R.string.default_search_radius))),
                   _latitude, _longitude);  
 
          } else {
@@ -329,18 +335,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
       super.onConfigurationChanged(newConfig);
       Log.d("FitHack", "onConfigurationChanged called");
       
-   }
-
-   @Override
-   public void onStart() {
-     super.onStart();
-     EasyTracker.getInstance(this).activityStart(this);
-   }
-
-   @Override
-   public void onStop() {
-     super.onStop();
-     EasyTracker.getInstance(this).activityStop(this);
    }
 
    
