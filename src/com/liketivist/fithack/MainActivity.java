@@ -3,9 +3,14 @@ package com.liketivist.fithack;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -14,6 +19,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -31,6 +37,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -40,7 +49,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.analytics.tracking.android.EasyTracker;
 
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
@@ -99,6 +107,57 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
    protected void onResume() {
       super.onResume();
 
+      int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+      if(status != ConnectionResult.SUCCESS) {
+         Dialog googleDialog = GooglePlayServicesUtil.getErrorDialog(status, this, 1);
+         if(googleDialog != null) {
+            googleDialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
+               @Override
+               public void onDismiss(DialogInterface dialog) {
+                  finish();
+            }});
+            googleDialog.show();            
+         } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Error with Google Play services");
+            builder.setMessage("This app requires Google Play services which appear to be invalid on your device. Please contact the developers with further details.");
+            builder.setPositiveButton("Okay", new DialogInterface.OnClickListener(){
+               @Override
+               public void onClick(DialogInterface dialog, int which) {
+                  finish();
+               }});
+            AlertDialog dialog = builder.create();
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
+               @Override
+               public void onDismiss(DialogInterface dialog) {
+                  finish();
+            }});
+            dialog.show();
+         }
+      }
+      
+      try {
+          ApplicationInfo info = getPackageManager().getApplicationInfo("com.google.android.apps.maps", 0 );
+      } catch(PackageManager.NameNotFoundException e) {
+         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+         builder.setTitle("Install Google Maps");
+         builder.setMessage("This app requires Google Maps be installed to work properly");
+         builder.setPositiveButton("Install", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.apps.maps"));
+               startActivity(intent);
+               finish();
+            }});
+         AlertDialog dialog = builder.create();
+         dialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+               finish();
+         }});
+         dialog.show();
+      }
+      
       findViewById(R.id.progressBar1).setVisibility(View.VISIBLE);
       
       if(!isNetworkAvailable(this)) {
